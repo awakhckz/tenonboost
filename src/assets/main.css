@@ -1,0 +1,96 @@
+@import './base.css';
+@import "tailwindcss";
+
+#app {
+  margin: 0 auto;
+  font-family: "QuickSand", serif;
+  /* color: #8b00a7; */
+  background: #8b00a7;
+  color: aliceblue;
+}
+
+.lex{
+  font-family: "Lexend Giga", serif;
+}
+
+.secondary{
+  background: #4f117a;
+}
+.light-p{
+  background: #6e11b0;
+}
+.light-p nav{
+  background: transparent;
+}
+
+.delivery{
+  background: #fff;
+  color: #3603c6;
+}
+
+.cards{
+  background:#faab00;
+  color: #fff;
+}
+
+.cards div{
+  background: #59168b;
+}
+
+.order-btn{
+  background: linear-gradient(to right, #4f117a, #8b00a7);
+  background: linear-gradient(to left, #c686f3, #3c0366);
+}
+
+.quick{
+  font-family: "QuickSand", serif;
+}
+
+.abt-page{
+  color: aliceblue;
+}
+
+.tg_channel{
+  color: white;
+  background:rgb(18, 97, 245)
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition:
+    opacity 1s ease-in-out,
+    transform 1s ease-in-out;
+}
+
+.reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Trigger effect when the element enters the viewport */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    will-change: opacity, transform;
+  }
+}
+
+/* Use CSS :has() if supported (Alternative to JS) */
+@supports (animation-timeline: view()) {
+  .reveal {
+    animation: fadeInUp linear both;
+    animation-timeline: view();
+    animation-range: entry 20% cover 20%;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}

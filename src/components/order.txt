@@ -1,0 +1,200 @@
+<div class="flex flex-col text-gray-200 bg-[#4f117a] relative w-full gap-6">
+    <Header class="z-40" />
+    <div
+      class="flex flex-col place-items-center bg-[#4f117a] w-full relative overflow-x-hidden gap-12 "
+    >
+      <div class="blob absolute top-0 w-[400px] -right-40 rotate-180">
+        <img src="/src/assets/blob1.svg" alt="tenonboost" />
+      </div>
+      <div class="blob absolute top-100 w-[400px] -left-40">
+        <img src="/src/assets/blob1.svg" alt="tenonboost" />
+      </div>
+      <!-- How to Place Order Section -->
+      <!-- <div class="howto z-20 flex flex-col gap-6 p-6 text-gray-200">
+      <p class="text-xl underline text-center">How to successfully place order</p>
+      <ol class="list-decimal">
+        <li>Select Category.</li>
+        <li>Choose a specific service that best fits.</li>
+        <li>Input desired quantity starting from the minimum.</li>
+        <li>Make Payment and wait for service to be complete.</li>
+      </ol>
+    </div> -->
+
+      <div class="z-20 text-center w-[90%] max-w-[600px] gap-6 flex flex-col">
+        <div>
+          <h1 class="text-2xl text-center text-orange-600">Important Information!!!</h1>
+          <p>
+            Follow instructions below to turn off
+            <span class="font-bold text-blue-600">Flag For Review</span> on Instagram. This is very
+            important to make sure followers deliver safely.
+          </p>
+        </div>
+        <div>
+          <h1 class="text-xl font-bold underline">Steps to Disable the Feature:</h1>
+          <ul class="list-none flex flex-col gap-4">
+            <li>
+              1️⃣ Open Instagram and go to
+              <span class="text-orange-600 font-semi-bold">Settings.</span>
+            </li>
+            <li>
+              2️⃣ Scrool Down
+              <span class="text-orange-600 font-semi-bold">Select Follow and Invite Friends.</span>
+            </li>
+            <li>
+              3️⃣ Scroll to the
+              <span class="text-orange-600 font-semi-bold"
+                >Flag for Review option and turn it OFF.</span
+              >
+            </li>
+            <li>
+              <span class="text-orange-600 font-semi-bold">Note:</span> Tenon Boost Won't take
+              responsibility of any damages caused by failure to turn off this feature.
+            </li>
+
+            <li>
+              ✨ Tip: Double-check your settings to avoid any interruptions! Thank you for your
+              cooperation. 🙌
+            </li>
+          </ul>
+        </div>
+      </div>
+      <!-- Currency Selection -->
+      <label class="flex flex-col gap-4 z-20">
+        <span class="text-gray-200 text-lg">Select Currency</span>
+        <select
+          v-model="selectedCurrency"
+          class="block w-full mt-1 p-2 border rounded outline-none"
+        >
+          <option
+            v-for="currency in currencies"
+            :key="currency"
+            :value="currency"
+            class="bg-gray-900"
+          >
+            {{ currency }}
+          </option>
+        </select>
+      </label>
+
+      <!-- Order Form -->
+      <form
+        @submit.prevent
+        class="flex flex-col gap-4 p-6 w-[90%] z-20 max-w-[600px] border border-gray-200 rounded-xl shadow-md space-y-4 text-gray-200"
+      >
+        <h2 class="text-xl font-bold text-center">Place An Order</h2>
+
+        <!-- Search Input -->
+        <input
+          type="text"
+          v-model="searchQuery"
+          placeholder="Search service..."
+          class="block w-full p-2 border rounded outline-none"
+        />
+
+        <!-- Category Selection -->
+        <label class="flex flex-col gap-4">
+          <span class="text-gray-200 text-lg">Select Category</span>
+          <select
+            v-model="selectedCategory"
+            class="block w-full mt-1 p-2 border rounded outline-none"
+            @change="filterServicesByCategory"
+          >
+            <option value="">All Categories</option>
+            <option
+              v-for="category in categories"
+              :key="category"
+              :value="category"
+              class="bg-gray-900 w-full"
+            >
+              {{ category }}
+            </option>
+          </select>
+        </label>
+
+        <!-- Service Selection -->
+        <label class="flex flex-col gap-4">
+          <span class="text-gray-200 text-lg">Select Service</span>
+          <select
+            v-model="selectedService"
+            class="block w-full mt-1 p-2 border rounded outline-none"
+          >
+            <option
+              v-for="service in filteredServices"
+              :key="service.id"
+              :value="service"
+              class="bg-gray-900"
+            >
+              {{ service.name }} - {{ selectedCurrency }} {{ (service.rate * 1.1).toFixed(2) }} per
+              1k
+            </option>
+          </select>
+        </label>
+
+        <!-- Quantity Input -->
+        <label class="flex flex-col gap-4">
+          <span class="text-gray-200 text-lg">Quantity</span>
+          <input
+            type="number"
+            v-model="quantity"
+            class="block w-full mt-1 p-2 border rounded outline-none"
+            :min="selectedService?.min || 1"
+            :max="selectedService?.max || 100000"
+          />
+        </label>
+
+        <!-- Link Input -->
+        <label class="flex flex-col gap-4">
+          <span class="text-gray-200 text-lg">Link</span>
+          <input
+            type="link"
+            v-model="link"
+            class="block w-full mt-1 p-2 border rounded outline-none"
+          />
+        </label>
+
+        <!-- Email -->
+        <!-- Add this near other form inputs -->
+        <label class="flex flex-col gap-4">
+          <span class="text-gray-200 text-lg">Email</span>
+          <input
+            type="email"
+            v-model="customerEmail"
+            required
+            pattern="[^@\s]+@[^@\s]+\.[^@\s]+"
+            class="block w-full mt-1 p-2 border rounded outline-none"
+          />
+        </label>
+
+        <!-- Total Price -->
+        <p class="text-lg font-semibold">
+          Total Price: {{ selectedCurrency }} {{ calculatePrice }}
+        </p>
+
+        <!-- Place Order Button -->
+        <button
+          type="button"
+          @click="initiatePayment"
+          class="bg-purple-700 cursor-pointer text-center text-xl p-2 rounded-2xl hover:opacity-80"
+        >
+          <!-- {{ isProcessing ? "Redirecting to Payment..." : "Place Order" }} -->
+          Place Order
+        </button>
+      </form>
+
+      <!-- Order Description Section -->
+      <div class="desc border w-[80%] max-w-[700px] h-fit p-4 mt-20 z-20">
+        <p class="header text-center text-xl text-gray-200">Order Description</p>
+        <div class="order-desc text-gray-200">
+          <p v-if="selectedService">
+            <strong>Service:</strong> {{ selectedService.name }}<br />
+            <strong>Description:</strong> {{ selectedService.description }}<br />
+            <strong>Min Quantity:</strong> {{ selectedService.min }}<br />
+            <strong>Max Quantity:</strong> {{ selectedService.max }}<br />
+            <strong>Rate:</strong> {{ selectedCurrency }}
+            {{ (selectedService.convertedRate * 1.1).toFixed(1) }} per 1k
+          </p>
+          <p v-else>No service selected.</p>
+        </div>
+      </div>
+    </div>
+  </div>
